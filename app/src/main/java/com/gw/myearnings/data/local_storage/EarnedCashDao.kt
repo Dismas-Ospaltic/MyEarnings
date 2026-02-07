@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.gw.myearnings.model.EarnedCashEntity
+import com.gw.myearnings.model.MonthlyEarningReport
 import com.gw.myearnings.utils.dateFormat
 import kotlinx.coroutines.flow.Flow
 
@@ -21,24 +22,17 @@ interface EarnedCashDao {
     suspend fun updateEarnings(earnings: EarnedCashEntity)
 
 
-//    @Query("SELECT * FROM general_orders ORDER BY timestamp DESC")
-//    fun getAllGenOrders(): Flow<List<GeneralOrdersEntity>>
-
-    @Query("SELECT * FROM earned_cash WHERE date=:dateToday ORDER BY timestamp DESC")
+    @Query("SELECT * FROM earned_cash WHERE date=:dateToday AND  status='active' ORDER BY timestamp DESC")
     fun getAllEarningsByDate(dateToday: String): Flow<List<EarnedCashEntity>>
 
 
-//    @Query("SELECT * FROM general_orders WHERE status = 'unpaid' ORDER BY timestamp DESC")
-//    fun getAllGenOrdersUnpaid(): Flow<List<GeneralOrdersEntity>>
-//
-//
-//    @Query("SELECT * FROM general_orders WHERE status = 'paid' ORDER BY timestamp DESC")
-//    fun getAllGenOrdersPaid(): Flow<List<GeneralOrdersEntity>>
-//
-//    // 🔹 Delete an order by unique ID
-//    @Query("DELETE FROM general_orders WHERE orderNumber = :orderNumber")
-//    suspend fun deleteOrderByNumber(orderNumber: String): Int
+    @Query("SELECT * FROM earned_cash WHERE  status='achirved' ORDER BY timestamp DESC")
+    fun getAllEarningsArchived(): Flow<List<EarnedCashEntity>>
 
+
+    // 🔹 Delete an Earned item by unique ID
+    @Query("DELETE FROM earned_cash WHERE itemNumber = :itemNumber")
+    suspend fun deleteEarningsByItemNumber(itemNumber: String): Int
 
     @Query("""
         UPDATE earned_cash 
@@ -69,21 +63,31 @@ interface EarnedCashDao {
          note: String? = null
     ): Int?
 
-    // 🔹 Count all orders
-    @Query("SELECT COUNT(*) FROM general_orders")
-    suspend fun getAllGenOrderCount(): Int
 
-    @Query("SELECT COUNT(*) FROM general_orders WHERE status = 'unpaid' AND date =:date")
-    fun getAllUnpaidOrderCount(date: String): Flow<Int?>
+    //counts and totals
+    @Query("SELECT SUM(totalEarned) FROM earned_cash WHERE date LIKE :month || '%'")
+    fun getMonthlyTotalEarnings(month: String): Flow<Float?>
 
-    @Query("SELECT COUNT(*) FROM general_orders WHERE status = 'paid' AND date =:date")
-    fun getAllPaidOrderCount(date: String): Flow<Int?>
+    //counts and totals
+    @Query("SELECT SUM(totalSaved) FROM earned_cash WHERE date LIKE :month || '%'")
+    fun getMonthlyTotalSaved(month: String): Flow<Float?>
 
-    @Query("SELECT SUM(totalOrder) FROM general_orders WHERE date=:date")
-    fun getTodayTotalOrders(date: String): Flow<Float?>
+    //counts and totals
+    @Query("SELECT SUM(totalSpend) FROM earned_cash WHERE date LIKE :month || '%'")
+    fun getMonthlyTotalSpend(month: String): Flow<Float?>
 
 
-    @Query("SELECT SUM(totalOrder) FROM general_orders")
-    fun getTotalOrders(): Flow<Float?>
+
+    @Query("""
+    SELECT 
+        date,
+        SUM(totalEarned) AS totalEarned,
+        SUM(totalSpend) AS totalSpend,
+        SUM(totalSaved) AS totalSaved
+    FROM earned_cash
+    GROUP BY date
+    ORDER BY date DESC
+""")
+    fun getMonthlyEarningReports(): Flow<List<MonthlyEarningReport>>
 
 }
