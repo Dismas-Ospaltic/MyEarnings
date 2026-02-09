@@ -3,6 +3,7 @@ package com.gw.myearnings.app_screens
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.gw.myearnings.R
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -19,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.gw.myearnings.app_screens.ui_components.SumCountDisplay
 import com.gw.myearnings.utils.dateFormat
 
 
@@ -48,12 +51,123 @@ fun ThisMonthEarningScreen(navController: NavController) {
         ) {
             DateHeader()
             Spacer(modifier = Modifier.height(8.dp))
-
+            SumCountDisplay()
 
             Spacer(modifier = Modifier.height(8.dp))
 
 
+            // Total Earned (highlight)
+            Text(
+                text = "Today's Entry",
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(id = R.color.charcoal_blue)
+                )
+            )
+            repeat(5){
 
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp)
+                        .clickable { },
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = colorResource(id = R.color.platinum) // soft off-white
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(18.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+
+                        // Header: Date
+                        Text(
+                            text = "20 Feb 2026",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.SemiBold,
+                                color = colorResource(id = R.color.dusk_blue)
+                            )
+                        )
+
+                        // Total Earned (highlight)
+                        Text(
+                            text = "Kes 600",
+                            style = MaterialTheme.typography.headlineSmall.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = colorResource(id = R.color.charcoal_blue)
+                            )
+                        )
+
+                        // Income / Saved / Spend row
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            StatText(
+                                label = "Saved",
+                                value = "Kes 600",
+                                valueColor = colorResource(id = R.color.dusk_blue)
+                            )
+
+                            StatText(
+                                label = "Spent",
+                                value = "Kes 0",
+                                valueColor = colorResource(id = R.color.red)
+                            )
+                        }
+
+                        // Source chip
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    color = colorResource(id = R.color.lavender),
+                                    shape = RoundedCornerShape(50)
+                                )
+                                .padding(horizontal = 12.dp, vertical = 6.dp)
+                        ) {
+                            Text(
+                                text = "Hair braiding",
+                                style = MaterialTheme.typography.labelMedium.copy(
+                                    color = colorResource(id = R.color.charcoal_blue),
+                                    fontWeight = FontWeight.Medium
+                                )
+                            )
+                        }
+
+                        // Note section
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    color = colorResource(id = R.color.pale_oak),
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                                .padding(12.dp)
+                        ) {
+                            Text(
+                                text = "Note",
+                                style = MaterialTheme.typography.labelLarge.copy(
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = colorResource(id = R.color.charcoal_blue)
+                                )
+                            )
+
+                            Spacer(modifier = Modifier.height(4.dp))
+
+                            Text(
+                                text = "The client I worked on last weekend",
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    color = colorResource(id = R.color.lilac_ash)
+                                )
+                            )
+                        }
+                    }
+                }
+
+
+            }
 
         }
     }
@@ -107,4 +221,28 @@ fun DateHeader(
 
     }
 }
+
+
+@Composable
+fun StatText(
+    label: String,
+    value: String,
+    valueColor: Color
+) {
+    Column {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = colorResource(id = R.color.lilac_ash)
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.SemiBold,
+                color = valueColor
+            )
+        )
+    }
+}
+
 
