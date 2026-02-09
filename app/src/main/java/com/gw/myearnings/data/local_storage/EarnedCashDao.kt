@@ -26,7 +26,7 @@ interface EarnedCashDao {
     fun getAllEarningsByDate(dateToday: String): Flow<List<EarnedCashEntity>>
 
 
-    @Query("SELECT * FROM earned_cash WHERE  status='achirved' ORDER BY timestamp DESC")
+    @Query("SELECT * FROM earned_cash WHERE  status='archived' ORDER BY timestamp DESC")
     fun getAllEarningsArchived(): Flow<List<EarnedCashEntity>>
 
 
@@ -51,7 +51,8 @@ interface EarnedCashDao {
         SET totalEarned = :totalEarned, 
             totalSaved = :totalSaved, 
             note= :note,
-            totalSpend = :totalSpend
+            totalSpend = :totalSpend,
+            source =:source
         WHERE itemNumber = :itemNumber
     """)
     suspend fun updateEarnItemById(

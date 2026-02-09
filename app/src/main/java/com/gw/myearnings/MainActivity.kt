@@ -62,13 +62,25 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+//import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -141,7 +153,10 @@ class MainActivity : ComponentActivity() {
 //                    BottomNavigationBar(navController)
                     if (currentRoute !in hideBottomBarScreens) {
 //                        BottomNavigationBar(navController)
-                        BottomNavigationBarModern(navController)
+                        // Wrapping in a Box to apply the padding
+                        Box(modifier = Modifier.navigationBarsPadding()) {
+                            BottomNavigationBar(navController)
+                        }
                     }
                 },
                 floatingActionButton = {
@@ -174,6 +189,103 @@ class MainActivity : ComponentActivity() {
 
 }
 
+//@Composable
+//fun BottomNavigationBar(navController: NavHostController) {
+//    val navBackStackEntry by navController.currentBackStackEntryAsState()
+//    val currentDestination = navBackStackEntry?.destination?.route
+//
+//    val screens = listOf(Screen.ThisMonth, Screen.MonthlyEarning, Screen.AppSettings)
+//
+//    val backgroundColor = colorResource(id = R.color.bottom_bar_background)
+//    val selectedColor = colorResource(id = R.color.tab_selected)
+//    val unselectedColor = colorResource(id = R.color.tab_unselected)
+//    val tabIndicatorColor = colorResource(id = R.color.tab_indicator)
+//
+//    Column{
+//        // Top Divider
+//        HorizontalDivider(
+//            thickness = 1.dp, // Adjust thickness as needed
+//            color =  colorResource(id = R.color.tab_indicator)
+//        )
+//        NavigationBar(
+//            containerColor = backgroundColor
+//        ) {
+//            screens.forEach { screen ->
+//                val isSelected = currentDestination == screen.route
+//
+//                NavigationBarItem(
+//                    selected = isSelected,
+//                    onClick = {
+//                        if (currentDestination != screen.route) {
+//                            navController.navigate(screen.route) {
+//                                popUpTo(Screen.ThisMonth.route) { inclusive = false }
+//                                launchSingleTop = true
+//                            }
+//                        }
+//                    },
+//                    icon = {
+//
+//                        when (screen) {
+//                            is Screen.ThisMonth -> {
+//                                Icon(
+//                                    imageVector = FontAwesomeIcons.Solid.FileInvoiceDollar,
+//                                    contentDescription = "Home",
+//                                    tint = if (isSelected) selectedColor else unselectedColor,
+//                                    modifier = Modifier.size(24.dp)
+//                                )
+//                            }
+//
+//                            is Screen.MonthlyEarning -> {
+//                                Icon(
+//                                    imageVector = FontAwesomeIcons.Solid.ListAlt,
+//                                    contentDescription = "history",
+//                                    tint = if (isSelected) selectedColor else unselectedColor,
+//                                    modifier = Modifier.size(24.dp)
+//                                )
+//                            }
+//
+//                            // cog icon from font awesome icons
+//                            is Screen.AppSettings -> {
+//                                Icon(
+//                                    imageVector = FontAwesomeIcons.Solid.UserCog,
+//                                    contentDescription = "setting",
+//                                    tint = if (isSelected) selectedColor else unselectedColor,
+//                                    modifier = Modifier.size(24.dp)
+//                                )
+//                            }
+//
+//                            else ->  {
+//                                Icon(
+//                                    imageVector = FontAwesomeIcons.Solid.Home,
+//                                    contentDescription = "home",
+//                                    tint = if (isSelected) selectedColor else unselectedColor,
+//                                    modifier = Modifier.size(24.dp)
+//                                )
+//                            }
+//                          // this is for Fallback icon
+//                        }
+//
+//                    },
+//                    label = {
+//                        Text(
+//                            text = screen.route.replaceFirstChar { it.titlecase(Locale.ROOT) },
+//                            color = if (isSelected) selectedColor else unselectedColor // Apply custom colors
+//                        )
+//                    },
+//                    colors = NavigationBarItemDefaults.colors(
+//                        selectedIconColor = selectedColor,
+//                        unselectedIconColor = unselectedColor,
+//                        selectedTextColor = selectedColor,
+//                        unselectedTextColor = unselectedColor,
+//                        indicatorColor = tabIndicatorColor // this Changes the background color of selected tab
+//                    )
+//                )
+//            }
+//        }
+//    }
+//}
+
+
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -184,173 +296,90 @@ fun BottomNavigationBar(navController: NavHostController) {
     val backgroundColor = colorResource(id = R.color.bottom_bar_background)
     val selectedColor = colorResource(id = R.color.tab_selected)
     val unselectedColor = colorResource(id = R.color.tab_unselected)
-    val tabIndicatorColor = colorResource(id = R.color.tab_indicator)
+    val indicatorColor = colorResource(id = R.color.tab_indicator).copy(alpha = 0.2f)
 
-    Column{
-        // Top Divider
-        HorizontalDivider(
-            thickness = 1.dp, // Adjust thickness as needed
-            color =  colorResource(id = R.color.tab_indicator)
-        )
-        NavigationBar(
-            containerColor = backgroundColor
+    // Using a Surface for the "Floating" effect
+    Surface(
+        modifier = Modifier
+            .padding(start = 24.dp, end = 24.dp, bottom = 24.dp) // Lift it off the bottom
+            .fillMaxWidth()
+            .height(64.dp),
+        shape = RoundedCornerShape(32.dp), // Pill shape
+        color = backgroundColor,
+        tonalElevation = 8.dp,
+        shadowElevation = 10.dp
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround
         ) {
             screens.forEach { screen ->
                 val isSelected = currentDestination == screen.route
 
-                NavigationBarItem(
-                    selected = isSelected,
-                    onClick = {
-                        if (currentDestination != screen.route) {
-                            navController.navigate(screen.route) {
-                                popUpTo(Screen.ThisMonth.route) { inclusive = false }
-                                launchSingleTop = true
+                // Custom Item Layout
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null // Removes the default rectangular ripple
+                        ) {
+                            if (currentDestination != screen.route) {
+                                navController.navigate(screen.route) {
+                                    popUpTo(Screen.ThisMonth.route) { inclusive = false }
+                                    launchSingleTop = true
+                                }
                             }
-                        }
-                    },
-                    icon = {
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    // Selection Indicator Background
+//                    AnimatedVisibility(
+//                        visible = isSelected,
+//                        enter = fadeIn() + expandHorizontally(),
+//                        exit = fadeOut() + shrinkHorizontally()
+//                    ) {
+                    androidx.compose.animation.AnimatedVisibility(
+                        visible = isSelected,
+                        enter = fadeIn() + scaleIn(initialScale = 0.8f),
+                        exit = fadeOut() + scaleOut(targetScale = 0.8f)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(width = 80.dp, height = 40.dp)
+                                .background(indicatorColor, RoundedCornerShape(20.dp))
+                        )
+                    }
 
-                        when (screen) {
-                            is Screen.ThisMonth -> {
-                                Icon(
-                                    imageVector = FontAwesomeIcons.Solid.FileInvoiceDollar,
-                                    contentDescription = "Home",
-                                    tint = if (isSelected) selectedColor else unselectedColor,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = when (screen) {
+                                is Screen.ThisMonth -> FontAwesomeIcons.Solid.FileInvoiceDollar
+                                is Screen.MonthlyEarning -> FontAwesomeIcons.Solid.ListAlt
+                                is Screen.AppSettings -> FontAwesomeIcons.Solid.UserCog
+                                else -> FontAwesomeIcons.Solid.Home
+                            },
+                            contentDescription = null,
+                            tint = if (isSelected) selectedColor else unselectedColor,
+                            modifier = Modifier.size(20.dp)
+                        )
 
-                            is Screen.MonthlyEarning -> {
-                                Icon(
-                                    imageVector = FontAwesomeIcons.Solid.ListAlt,
-                                    contentDescription = "history",
-                                    tint = if (isSelected) selectedColor else unselectedColor,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-
-                            // cog icon from font awesome icons
-                            is Screen.AppSettings -> {
-                                Icon(
-                                    imageVector = FontAwesomeIcons.Solid.UserCog,
-                                    contentDescription = "setting",
-                                    tint = if (isSelected) selectedColor else unselectedColor,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-
-                            else ->  {
-                                Icon(
-                                    imageVector = FontAwesomeIcons.Solid.Home,
-                                    contentDescription = "home",
-                                    tint = if (isSelected) selectedColor else unselectedColor,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-                          // this is for Fallback icon
-                        }
-
-                    },
-                    label = {
                         Text(
                             text = screen.route.replaceFirstChar { it.titlecase(Locale.ROOT) },
-                            color = if (isSelected) selectedColor else unselectedColor // Apply custom colors
+                            style = MaterialTheme.typography.labelSmall,
+                            color = if (isSelected) selectedColor else unselectedColor
                         )
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = selectedColor,
-                        unselectedIconColor = unselectedColor,
-                        selectedTextColor = selectedColor,
-                        unselectedTextColor = unselectedColor,
-                        indicatorColor = tabIndicatorColor // this Changes the background color of selected tab
-                    )
-                )
+                    }
+                }
             }
         }
     }
 }
-
-
-//@Composable
-//fun BottomNavigationBarModern(navController: NavHostController) {
-//    val navBackStackEntry by navController.currentBackStackEntryAsState()
-//    val currentDestination = navBackStackEntry?.destination?.route
-//
-//    val screens = listOf(Screen.ThisMonth, Screen.MonthlyEarning, Screen.AppSettings)
-//
-//    val backgroundColor = colorResource(id = R.color.bottom_bar_background)
-//    val selectedColor = colorResource(id = R.color.tab_selected)
-//    val unselectedColor = colorResource(id = R.color.tab_unselected)
-//    val indicatorColor = colorResource(id = R.color.tab_indicator)
-//
-//    Surface(
-//        color = backgroundColor,
-//        shadowElevation = 0.dp,
-//        modifier = Modifier.fillMaxWidth()
-//            .navigationBarsPadding() // <-- adds safe bottom padding
-//    ) {
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(vertical = 8.dp),
-//            horizontalArrangement = Arrangement.SpaceEvenly,
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            screens.forEach { screen ->
-//                val isSelected = currentDestination == screen.route
-//
-//                Column(
-//                    horizontalAlignment = Alignment.CenterHorizontally,
-//                    modifier = Modifier
-//                        .clickable {
-//                            if (currentDestination != screen.route) {
-//                                navController.navigate(screen.route) {
-//                                    popUpTo(Screen.MainApp.route) { inclusive = false }
-//                                    launchSingleTop = true
-//                                }
-//                            }
-//                        }
-//                        .padding(horizontal = 8.dp)
-//                ) {
-//                    // Icon
-//                    Icon(
-//                        imageVector = when (screen) {
-//                            is Screen.MainApp -> FontAwesomeIcons.Solid.FileInvoiceDollar
-//                            is Screen.HistoryData -> FontAwesomeIcons.Solid.ListAlt
-//                            is Screen.Settings -> FontAwesomeIcons.Solid.UserCog
-//                            else -> FontAwesomeIcons.Solid.Home
-//                        },
-//                        contentDescription = screen.route,
-//                        tint = if (isSelected) selectedColor else unselectedColor,
-//                        modifier = Modifier.size(22.dp)
-//                    )
-//
-//                    Spacer(modifier = Modifier.height(2.dp))
-//
-//                    // Label
-//                    Text(
-//                        text = screen.route.replaceFirstChar { it.titlecase(Locale.ROOT) },
-//                        color = if (isSelected) selectedColor else unselectedColor,
-//                        fontSize = 11.sp
-//                    )
-//
-//                    // Small underline indicator for selected tab
-//                    if (isSelected) {
-//                        Spacer(
-//                            modifier = Modifier
-//                                .height(2.dp)
-//                                .width(24.dp)
-//                                .background(indicatorColor, shape = RoundedCornerShape(1.dp))
-//                                .padding(top = 2.dp)
-//                        )
-//                    } else {
-//                        Spacer(modifier = Modifier.height(4.dp)) // placeholder
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
 
 @Preview(showBackground = true)
 @Composable
@@ -358,8 +387,3 @@ fun BottomNavigationBarPreview() {
     BottomNavigationBar(navController = rememberNavController())
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun BottomNavigationBarModernPreview() {
-//    BottomNavigationBarModern(navController = rememberNavController())
-//}
