@@ -7,4 +7,28 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+
+    <!-- Charcoal Blue -->
+    <color name="charcoal_blue">#383F51</color>
+
+    <!-- Lavender -->
+    <color name="lavender">#DDDBF1</color>
+
+    <!-- Dusk Blue -->
+    <color name="dusk_blue">#3C4F76</color>
+
+    <!-- Pale Oak -->
+    <color name="pale_oak">#D1BEB0</color>
+
+    <!-- Lilac Ash -->
+    <color name="lilac_ash">#AB9F9D</color>
+
+
+    <!-- Bottom Bar -->
+    <color name="bottom_bar_background">#383F51</color> <!-- charcoal_blue -->
+    <color name="tab_selected">#DDDBF1</color>           <!-- lavender -->
+    <color name="tab_unselected">#AB9F9D</color>         <!-- lilac_ash -->
+    <color name="tab_indicator">#3C4F76</color>          <!-- dusk_blue -->
 </resources>
