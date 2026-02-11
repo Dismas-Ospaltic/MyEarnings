@@ -19,6 +19,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gw.myearnings.utils.dateFormat
+import com.gw.myearnings.utils.yearMonthFormat
+import com.gw.myearnings.viewmodel.EarnedCashViewModel
+import com.gw.myearnings.viewmodel.SettingsViewModel
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.CreditCard
@@ -29,10 +34,36 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SumCountDisplay() {
 
+
+    val earnedCashViewModel: EarnedCashViewModel = koinViewModel()
+
+    val today = dateFormat(System.currentTimeMillis())
+
+
+
+    val month = yearMonthFormat(today.toString())
+
+    // Monthly totals
+    val totalEarned by earnedCashViewModel
+        .getMonthlyTotalEarnings(month.toString())
+        .collectAsStateWithLifecycle(initialValue = 0f)
+
+    val totalSaved by earnedCashViewModel
+        .getMonthlyTotalSaved(month.toString())
+        .collectAsStateWithLifecycle(initialValue = 0f)
+
+    val totalSpent by earnedCashViewModel
+        .getMonthlyTotalSpend(month.toString())
+        .collectAsStateWithLifecycle(initialValue = 0f)
+
+
+    val viewModel: SettingsViewModel = koinViewModel()
+    val selectedCurrency by viewModel.selectedCurrency.collectAsState()
+
     val data = listOf(
-        Triple("Total Income", "Kes. 100,000", FontAwesomeIcons.Solid.Wallet),
-        Triple("Total Saved", "Kes. 80,000", FontAwesomeIcons.Solid.PiggyBank),
-        Triple("Total Spend", "Kes. 20,000", FontAwesomeIcons.Solid.CreditCard)
+        Triple("Total Income", "$selectedCurrency $totalEarned", FontAwesomeIcons.Solid.Wallet),
+        Triple("Total Saved", "$selectedCurrency $totalSaved", FontAwesomeIcons.Solid.PiggyBank),
+        Triple("Total Spend", "$selectedCurrency $totalSpent", FontAwesomeIcons.Solid.CreditCard)
     )
 
     Box(

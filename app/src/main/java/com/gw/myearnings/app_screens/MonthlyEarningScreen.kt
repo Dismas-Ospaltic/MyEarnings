@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,15 +20,40 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gw.myearnings.utils.dateFormat
-
-
+import com.gw.myearnings.utils.yearMonthFormat
+import com.gw.myearnings.viewmodel.EarnedCashViewModel
+import com.gw.myearnings.viewmodel.SettingsViewModel
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun MonthlyEarningScreen(navController: NavController) {
+
+    val earnedCashViewModel: EarnedCashViewModel = koinViewModel()
+
+    val today = dateFormat(System.currentTimeMillis())
+
+    // Active earnings for today
+    val earningsToday by earnedCashViewModel
+        .getEarningsByDate(today)
+        .collectAsStateWithLifecycle(initialValue = emptyList())
+
+
+    // Monthly reports
+    val reports by earnedCashViewModel
+        .getMonthlyReports()
+        .collectAsStateWithLifecycle(initialValue = emptyList())
+
+    val month = yearMonthFormat(today.toString())
+
+
+
+    val viewModel: SettingsViewModel = koinViewModel()
+    val selectedCurrency by viewModel.selectedCurrency.collectAsState()
 
     Column(
         modifier = Modifier
@@ -51,7 +77,12 @@ fun MonthlyEarningScreen(navController: NavController) {
             MonthlyHeader()
             Spacer(modifier = Modifier.height(8.dp))
 
-            repeat(5){
+            if(reports.isEmpty()){
+                NoDataPlaceholder()
+            }else{
+                // Iterate over earnings when not empty
+                for (index in reports.indices) {
+                    val report = reports[index]
 
                 Card(
                     modifier = Modifier
@@ -71,7 +102,7 @@ fun MonthlyEarningScreen(navController: NavController) {
 
                         // Header: Date
                         Text(
-                            text = "Date :Feb 2026",
+                            text = "Date :${report.date}",
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.SemiBold,
                                 color = colorResource(id = R.color.white)
@@ -80,28 +111,28 @@ fun MonthlyEarningScreen(navController: NavController) {
 
                         // Total Earned (highlight)
                         Text(
-                            text = "Earned: Kes 600",
+                            text = "Earned: $selectedCurrency ${report.totalEarned}",
                             style = MaterialTheme.typography.headlineSmall.copy(
                                 fontWeight = FontWeight.SemiBold,
                                 color = colorResource(id = R.color.white)
                             )
                         )
-                            StatText(
-                                label = "Saved",
-                                value = "Kes 600",
-                                valueColor = colorResource(id = R.color.white)
-                            )
+                        StatText(
+                            label = "Saved",
+                            value = "$selectedCurrency ${report.totalSaved}",
+                            valueColor = colorResource(id = R.color.white)
+                        )
 
-                            StatText(
-                                label = "Spent",
-                                value = "Kes 0",
-                                valueColor = colorResource(id = R.color.red)
-                            )
+                        StatText(
+                            label = "Spent",
+                            value = "$selectedCurrency ${report.totalSpend}",
+                            valueColor = colorResource(id = R.color.red)
+                        )
 
                     }
                 }
 
-
+            }
             }
 
 

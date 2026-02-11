@@ -19,16 +19,37 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gw.myearnings.app_screens.ui_components.SumCountDisplay
 import com.gw.myearnings.utils.dateFormat
-
-
+import com.gw.myearnings.utils.yearMonthFormat
+import com.gw.myearnings.viewmodel.EarnedCashViewModel
+import com.gw.myearnings.viewmodel.SettingsViewModel
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun ThisMonthEarningScreen(navController: NavController) {
+    val earnedCashViewModel: EarnedCashViewModel = koinViewModel()
+
+     val today = dateFormat(System.currentTimeMillis())
+
+    // Active earnings for today
+    val earningsToday by earnedCashViewModel
+        .getEarningsByDate(today)
+        .collectAsStateWithLifecycle(initialValue = emptyList())
+
+    val month = yearMonthFormat(today.toString())
+
+
+
+    val viewModel: SettingsViewModel = koinViewModel()
+    val selectedCurrency by viewModel.selectedCurrency.collectAsState()
+
+
 
     Column(
         modifier = Modifier
@@ -64,7 +85,27 @@ fun ThisMonthEarningScreen(navController: NavController) {
                     color = colorResource(id = R.color.charcoal_blue)
                 )
             )
-            repeat(5){
+
+            if(earningsToday.isEmpty()){
+               NoDataPlaceholder()
+            }else{
+                // Iterate over earnings when not empty
+                for (index in earningsToday.indices) {
+                    val earn = earningsToday[index]
+
+
+
+
+
+
+
+//                }
+//
+//            }
+//
+//
+//
+//            repeat(5) {
 
                 Card(
                     modifier = Modifier
@@ -84,7 +125,7 @@ fun ThisMonthEarningScreen(navController: NavController) {
 
                         // Header: Date
                         Text(
-                            text = "Date :20 Feb 2026",
+                            text = "Date :${earn.date}",
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.SemiBold,
                                 color = colorResource(id = R.color.dusk_blue)
@@ -93,7 +134,7 @@ fun ThisMonthEarningScreen(navController: NavController) {
 
                         // Total Earned (highlight)
                         Text(
-                            text = "Earned: Kes 600",
+                            text = "Earned: $selectedCurrency ${earn.totalEarned}",
                             style = MaterialTheme.typography.headlineSmall.copy(
                                 fontWeight = FontWeight.SemiBold,
                                 color = colorResource(id = R.color.dusk_blue)
@@ -107,13 +148,13 @@ fun ThisMonthEarningScreen(navController: NavController) {
                         ) {
                             StatText(
                                 label = "Saved",
-                                value = "Kes 600",
+                                value = "$selectedCurrency ${earn.totalSaved}",
                                 valueColor = colorResource(id = R.color.dusk_blue)
                             )
 
                             StatText(
                                 label = "Spent",
-                                value = "Kes 0",
+                                value = "$selectedCurrency ${earn.totalSpend}",
                                 valueColor = colorResource(id = R.color.red)
                             )
                         }
@@ -128,7 +169,7 @@ fun ThisMonthEarningScreen(navController: NavController) {
                                 .padding(horizontal = 12.dp, vertical = 6.dp)
                         ) {
                             Text(
-                                text = "Hair braiding",
+                                text = "Source: ${earn.source}",
                                 style = MaterialTheme.typography.labelMedium.copy(
                                     color = colorResource(id = R.color.charcoal_blue),
                                     fontWeight = FontWeight.Medium
@@ -136,37 +177,42 @@ fun ThisMonthEarningScreen(navController: NavController) {
                             )
                         }
 
-                        // Note section
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(
-                                    color = colorResource(id = R.color.pale_oak),
-                                    shape = RoundedCornerShape(12.dp)
-                                )
-                                .padding(12.dp)
-                        ) {
-                            Text(
-                                text = "Note",
-                                style = MaterialTheme.typography.labelLarge.copy(
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = colorResource(id = R.color.charcoal_blue)
-                                )
-                            )
 
-                            Spacer(modifier = Modifier.height(4.dp))
+                        if (!earn.note.isNullOrBlank()) {
 
-                            Text(
-                                text = "The client I worked on last weekend",
-                                style = MaterialTheme.typography.bodyMedium.copy(
-                                    color = colorResource(id = R.color.lilac_ash)
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(
+                                        color = colorResource(id = R.color.pale_oak),
+                                        shape = RoundedCornerShape(12.dp)
+                                    )
+                                    .padding(12.dp)
+                            ) {
+
+                                Text(
+                                    text = "Note",
+                                    style = MaterialTheme.typography.labelLarge.copy(
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = colorResource(id = R.color.charcoal_blue)
+                                    )
                                 )
-                            )
+
+                                Spacer(modifier = Modifier.height(4.dp))
+
+                                Text(
+                                    text = earn.note, // Safe because we already checked
+                                    style = MaterialTheme.typography.bodyMedium.copy(
+                                        color = colorResource(id = R.color.lilac_ash)
+                                    )
+                                )
+                            }
                         }
+
                     }
                 }
 
-
+            }
             }
 
         }
@@ -244,5 +290,34 @@ fun StatText(
         )
     }
 }
+
+
+
+
+///no data placeholder
+@Composable
+fun NoDataPlaceholder() {
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(
+                color = colorResource(id = R.color.lavender).copy(alpha = 0.25f),
+                shape = RoundedCornerShape(16.dp)
+            )
+            .padding(vertical = 40.dp),
+        contentAlignment = Alignment.Center
+    ) {
+
+        Text(
+            text = "No Data Available",
+            color = colorResource(id = R.color.dusk_blue),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium
+        )
+    }
+}
+
 
 

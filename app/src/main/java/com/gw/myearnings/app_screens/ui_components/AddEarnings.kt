@@ -526,7 +526,7 @@ fun AddEarnings(
 }
 
 
-fun generateTimestampBased10DigitNumberForReceipt(): Long {
+fun generateTimestampBased10DigitNumberItemNo(): Long {
     val timestampPart = (System.currentTimeMillis() / 1000) % 100000 // Last 5 digits of timestamp (seconds)
     val randomPart = (10000..99999).random() // 5 random digits
     return "$timestampPart$randomPart".toLong()
