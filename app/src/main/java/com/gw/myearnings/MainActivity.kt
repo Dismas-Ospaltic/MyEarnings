@@ -106,9 +106,11 @@ import com.gw.myearnings.app_navigation.Screen
 import com.gw.myearnings.app_screens.ui_components.AddFab
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.CalendarAlt
 import compose.icons.fontawesomeicons.solid.ChartLine
 import compose.icons.fontawesomeicons.solid.ClipboardList
 import compose.icons.fontawesomeicons.solid.Cog
+import compose.icons.fontawesomeicons.solid.Cogs
 import compose.icons.fontawesomeicons.solid.FileInvoiceDollar
 import compose.icons.fontawesomeicons.solid.Home
 import compose.icons.fontawesomeicons.solid.ListAlt
@@ -265,8 +267,8 @@ fun BottomNavigationBar(navController: NavHostController) {
                         Icon(
                             imageVector = when (screen) {
                                 is Screen.ThisMonth -> FontAwesomeIcons.Solid.FileInvoiceDollar
-                                is Screen.MonthlyEarning -> FontAwesomeIcons.Solid.ListAlt
-                                is Screen.AppSettings -> FontAwesomeIcons.Solid.UserCog
+                                is Screen.MonthlyEarning -> FontAwesomeIcons.Solid.CalendarAlt
+                                is Screen.AppSettings -> FontAwesomeIcons.Solid.Cogs
                                 else -> FontAwesomeIcons.Solid.Home
                             },
                             contentDescription = null,

@@ -2,6 +2,8 @@ package com.gw.myearnings.app_screens
 
 
 
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,14 +20,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import com.gw.myearnings.R
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.gw.myearnings.app_navigation.Screen
 import com.gw.myearnings.utils.dateFormat
 import com.gw.myearnings.viewmodel.SettingsViewModel
 import compose.icons.FontAwesomeIcons
@@ -35,6 +40,7 @@ import compose.icons.fontawesomeicons.solid.Cogs
 import compose.icons.fontawesomeicons.solid.CommentDots
 import compose.icons.fontawesomeicons.solid.DollarSign
 import compose.icons.fontawesomeicons.solid.InfoCircle
+import compose.icons.fontawesomeicons.solid.Lock
 import compose.icons.fontawesomeicons.solid.Shower
 import compose.icons.fontawesomeicons.solid.UserPlus
 import compose.icons.fontawesomeicons.solid.Wrench
@@ -44,7 +50,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun AppSettingScreen(navController: NavController) {
 
-
+     val context = LocalContext.current
     val viewModel: SettingsViewModel = koinViewModel()
     val selectedCurrency by viewModel.selectedCurrency.collectAsState()
 
@@ -91,10 +97,14 @@ fun AppSettingScreen(navController: NavController) {
             ) {
 
                 SettingsItem(
-                    icon = FontAwesomeIcons.Solid.Cogs,
-                    title = "Settings",
+                    icon = FontAwesomeIcons.Solid.Lock,
+                    title = "Privacy Policy",
                     onClick = {
-
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            "https://user.github.io/MyEarningsApp/privacyPolicy.html".toUri()
+                        )
+                        context.startActivity(intent)
                     }
                 )
 
@@ -102,24 +112,17 @@ fun AppSettingScreen(navController: NavController) {
                     icon = FontAwesomeIcons.Solid.CommentDots,
                     title = "Help & Feedback",
                     onClick = {
-
-                    }
-                )
-
-                SettingsItem(
-                    icon = FontAwesomeIcons.Solid.Shower,
-                    title = "Share Muso",
-                    onClick = {
-
-                    }
-                )
-
-                SettingsItem(
-                    icon = FontAwesomeIcons.Solid.Wrench,
-                    title = "Fix Songs",
-                    showDot = true,
-                    onClick = {
-
+                        val intent = Intent(Intent.ACTION_SEND).apply {
+                            type = "message/rfc822"
+                            putExtra(Intent.EXTRA_EMAIL, arrayOf("email@gmail.com"))
+                            putExtra(Intent.EXTRA_SUBJECT, "App Support & Feedback")
+                            putExtra(Intent.EXTRA_TEXT, "Hello, am ...")
+                        }
+                        try {
+                            context.startActivity(Intent.createChooser(intent, "Contact Support"))
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "No email app found.", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 )
 
@@ -144,7 +147,7 @@ fun AppSettingScreen(navController: NavController) {
                     icon = FontAwesomeIcons.Solid.InfoCircle,
                     title = "About App",
                     onClick = {
-
+                   navController.navigate(Screen.AppOverview.route)
                     }
                 )
 
