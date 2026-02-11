@@ -6,9 +6,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.gw.myearnings.model.EarnedCashEntity
+import com.gw.myearnings.model.AppConfigEntity
 
 
-@Database(entities = [EarnedCashEntity::class], version = 1, exportSchema = false)
+@Database(entities = [EarnedCashEntity::class, AppConfigEntity::class], version = 2, exportSchema = false)
 abstract class EarnedCashDataBase : RoomDatabase() {
 
     abstract fun earnedCashDao(): EarnedCashDao

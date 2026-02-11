@@ -2,6 +2,7 @@ package com.gw.myearnings.repository
 
 
 import com.gw.myearnings.data.local_storage.EarnedCashDao
+import com.gw.myearnings.model.AppConfigEntity
 import com.gw.myearnings.model.EarnedCashEntity
 import com.gw.myearnings.model.MonthlyEarningReport
 import kotlinx.coroutines.flow.Flow
@@ -97,5 +98,22 @@ class EarnedCashRepository(
     // Daily grouped earning reports
     fun getMonthlyEarningReports(): Flow<List<MonthlyEarningReport>> {
         return earnedCashDao.getMonthlyEarningReports()
+    }
+
+
+
+
+    //settings
+    suspend fun saveCurrency(currency: String) {
+        earnedCashDao.saveCurrency(
+            AppConfigEntity(
+                id = 1,
+                currency = currency
+            )
+        )
+    }
+
+    suspend fun getCurrency(): String {
+        return earnedCashDao.getCurrency() ?: "KES"
     }
 }

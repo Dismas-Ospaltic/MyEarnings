@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.gw.myearnings.model.AppConfigEntity
 import com.gw.myearnings.model.EarnedCashEntity
 import com.gw.myearnings.model.MonthlyEarningReport
 import com.gw.myearnings.utils.dateFormat
@@ -90,5 +91,23 @@ interface EarnedCashDao {
     ORDER BY date DESC
 """)
     fun getMonthlyEarningReports(): Flow<List<MonthlyEarningReport>>
+
+    ///settings operations
+
+    // Insert or update currency
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveCurrency(config: AppConfigEntity)
+
+    // Get currency
+    @Query("SELECT currency FROM app_config WHERE id = 1")
+    suspend fun getCurrency(): String?
+
+
+
+
+
+
+
+
 
 }
