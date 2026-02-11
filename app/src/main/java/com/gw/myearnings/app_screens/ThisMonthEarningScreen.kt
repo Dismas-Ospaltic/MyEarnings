@@ -71,20 +71,20 @@ fun ThisMonthEarningScreen(navController: NavController) {
                         .fillMaxWidth()
                         .padding(vertical = 10.dp)
                         .clickable { },
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(8.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = colorResource(id = R.color.platinum) // soft off-white
                     )
                 ) {
                     Column(
-                        modifier = Modifier.padding(18.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                        modifier = Modifier.padding(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
 
                         // Header: Date
                         Text(
-                            text = "20 Feb 2026",
+                            text = "Date :20 Feb 2026",
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.SemiBold,
                                 color = colorResource(id = R.color.dusk_blue)
@@ -93,10 +93,10 @@ fun ThisMonthEarningScreen(navController: NavController) {
 
                         // Total Earned (highlight)
                         Text(
-                            text = "Kes 600",
+                            text = "Earned: Kes 600",
                             style = MaterialTheme.typography.headlineSmall.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = colorResource(id = R.color.charcoal_blue)
+                                fontWeight = FontWeight.SemiBold,
+                                color = colorResource(id = R.color.dusk_blue)
                             )
                         )
 
