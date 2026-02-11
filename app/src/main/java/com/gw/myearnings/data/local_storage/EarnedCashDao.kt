@@ -68,15 +68,15 @@ interface EarnedCashDao {
 
     //counts and totals
     @Query("SELECT SUM(totalEarned) FROM earned_cash WHERE date LIKE :month || '%'")
-    fun getMonthlyTotalEarnings(month: String): Flow<Float?>
+    fun getMonthlyTotalEarnings(month: String): Flow<Float>
 
     //counts and totals
     @Query("SELECT SUM(totalSaved) FROM earned_cash WHERE date LIKE :month || '%'")
-    fun getMonthlyTotalSaved(month: String): Flow<Float?>
+    fun getMonthlyTotalSaved(month: String): Flow<Float>
 
     //counts and totals
     @Query("SELECT SUM(totalSpend) FROM earned_cash WHERE date LIKE :month || '%'")
-    fun getMonthlyTotalSpend(month: String): Flow<Float?>
+    fun getMonthlyTotalSpend(month: String): Flow<Float>
 
 
 

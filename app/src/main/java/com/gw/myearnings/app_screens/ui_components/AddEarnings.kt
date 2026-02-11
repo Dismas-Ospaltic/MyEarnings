@@ -43,226 +43,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gw.myearnings.R
+import com.gw.myearnings.model.EarnedCashEntity
 import com.gw.myearnings.utils.dateFormat
-
-
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun AddEarnings(
-//    onDismiss: () -> Unit
-//) {
-//    val backgroundColor = colorResource(id = R.color.dusk_blue)
-//
-//
-//    var noteDescription by remember { mutableStateOf("") }
-//    var source by remember { mutableStateOf("") }
-//    var amountEarned by remember { mutableStateOf("") }
-//    var amountSaved by remember { mutableStateOf("") }
-//    var amountSpent by remember { mutableStateOf("") }
-////    var total by remember { mutableStateOf(0f) }
-//
-//
-//
-//    val context = LocalContext.current
-//
-//
-//
-//    val currentDate = remember { System.currentTimeMillis() }
-//    val todayDate = dateFormat(currentDate)
-//
-//    // Error states
-//    var amountSavedError by remember { mutableStateOf(false) }
-//    var amountEarnedError by remember { mutableStateOf(false) }
-//    var sourceError by remember { mutableStateOf(false) }
-//    var amountSpentError by remember { mutableStateOf(false) }
-//
-//
-//
-//
-//    Dialog(onDismissRequest = { onDismiss() }) {
-//        Surface(
-//            shape = RoundedCornerShape(16.dp),
-//            color = Color.White,
-//            tonalElevation = 8.dp,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(16.dp)
-//        ) {
-//            Column(
-//                Modifier
-//                    .padding(16.dp)
-//                    .imePadding()
-//                    .verticalScroll(rememberScrollState()),
-//                verticalArrangement = Arrangement.spacedBy(12.dp)
-//            ) {
-//                Text(text = "Add New Earned income", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-//
-//
-//
-//                // Notes
-//                OutlinedTextField(
-//                    value = source,
-//                    onValueChange = { source = it },
-//                    label = { Text("Source *") },
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .heightIn(min = 100.dp, max = 200.dp)
-//                        .verticalScroll(rememberScrollState()),
-//                    colors = OutlinedTextFieldDefaults.colors(
-//                        unfocusedContainerColor = Color.White.copy(alpha = 0.9f),
-//                        focusedContainerColor = Color.White.copy(alpha = 0.95f),
-//                        focusedBorderColor = backgroundColor,
-//                        unfocusedBorderColor = Color.Gray,
-//                        focusedLabelColor = backgroundColor,
-//                        cursorColor = backgroundColor
-//                    ),
-//                    singleLine = true,
-//
-//                )
-//
-//
-//
-//                // Amount Earned
-//                OutlinedTextField(
-//                    value = amountEarned,
-//                    onValueChange = {
-//                        amountEarned = it
-//                        amountEarnedError = false
-//                    },
-//                    label = { Text("Amount Earned *") },
-//                    modifier = Modifier.fillMaxWidth(),
-//                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-//                    isError = amountEarnedError,
-//                    colors = OutlinedTextFieldDefaults.colors(
-//                        unfocusedContainerColor = Color.White.copy(alpha = 0.9f),
-//                        focusedContainerColor = Color.White.copy(alpha = 0.95f),
-//                        focusedBorderColor = backgroundColor,
-//                        unfocusedBorderColor = Color.Gray,
-//                        focusedLabelColor = backgroundColor,
-//                        cursorColor = backgroundColor
-//                    ),
-//                    singleLine = true
-//                )
-//                if (amountEarnedError) {
-//                    Text(
-//                        text = "Please enter a valid amount",
-//                        color = Color.Red,
-//                        fontSize = 12.sp
-//                    )
-//                }
-//
-//                OutlinedTextField(
-//                    value = amountEarned,
-//                    onValueChange = {
-//                        amountEarned = it
-//                        amountEarnedError = false
-//                    },
-//                    label = { Text("Amount Spent *") },
-//                    modifier = Modifier.fillMaxWidth(),
-//                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-//                    isError = amountEarnedError,
-//                    colors = OutlinedTextFieldDefaults.colors(
-//                        unfocusedContainerColor = Color.White.copy(alpha = 0.9f),
-//                        focusedContainerColor = Color.White.copy(alpha = 0.95f),
-//                        focusedBorderColor = backgroundColor,
-//                        unfocusedBorderColor = Color.Gray,
-//                        focusedLabelColor = backgroundColor,
-//                        cursorColor = backgroundColor
-//                    ),
-//                    singleLine = true
-//                )
-//                if (amountSpentError) {
-//                    Text(
-//                        text = "Please enter a valid amount",
-//                        color = Color.Red,
-//                        fontSize = 12.sp
-//                    )
-//                }
-//
-//
-//
-//                OutlinedTextField(
-//                    value = amountSaved,
-//                    onValueChange = {
-//                        amountSaved = it
-//                        amountSavedError = false
-//                    },
-//                    label = { Text("Amount Saved *") },
-//                    modifier = Modifier.fillMaxWidth(),
-//                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-//                    isError = amountSavedError,
-//                    colors = OutlinedTextFieldDefaults.colors(
-//                        unfocusedContainerColor = Color.White.copy(alpha = 0.9f),
-//                        focusedContainerColor = Color.White.copy(alpha = 0.95f),
-//                        focusedBorderColor = backgroundColor,
-//                        unfocusedBorderColor = Color.Gray,
-//                        focusedLabelColor = backgroundColor,
-//                        cursorColor = backgroundColor
-//                    ),
-//                    singleLine = true
-//                )
-//                if (amountSavedError) {
-//                    Text(
-//                        text = "Please enter a valid amount",
-//                        color = Color.Red,
-//                        fontSize = 12.sp
-//                    )
-//                }
-//
-//                // Notes
-//                OutlinedTextField(
-//                    value = noteDescription,
-//                    onValueChange = { noteDescription = it },
-//                    label = { Text("reference Note(optional)") },
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .heightIn(min = 100.dp, max = 200.dp)
-//                        .verticalScroll(rememberScrollState()),
-//                    colors = OutlinedTextFieldDefaults.colors(
-//                        unfocusedContainerColor = Color.White.copy(alpha = 0.9f),
-//                        focusedContainerColor = Color.White.copy(alpha = 0.95f),
-//                        focusedBorderColor = backgroundColor,
-//                        unfocusedBorderColor = Color.Gray,
-//                        focusedLabelColor = backgroundColor,
-//                        cursorColor = backgroundColor
-//                    ),
-//                    singleLine = false,
-//                    maxLines = 4
-//                )
-//
-//
-//
-//
-//
-//
-//                // Action buttons
-//                Row(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    horizontalArrangement = Arrangement.End
-//                ) {
-//                    TextButton(onClick = onDismiss) { Text("Cancel", color = colorResource(id = R.color.charcoal_blue)) }
-//                    Spacer(modifier = Modifier.width(8.dp))
-//                    Button(
-//                        modifier = Modifier
-//                            .height(56.dp),
-//                        shape = RoundedCornerShape(12.dp),
-//                        colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
-//                        onClick = {
-//                            var valid = true
-//                            if (amountEarned.toDoubleOrNull() == null) {
-//                                amountEarnedError = true
-//                                valid = false
-//                            }
-//
-//                        }) {
-//                        Text("Save")
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
+import com.gw.myearnings.viewmodel.EarnedCashViewModel
+import org.koin.androidx.compose.koinViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -270,6 +56,17 @@ import com.gw.myearnings.utils.dateFormat
 fun AddEarnings(
     onDismiss: () -> Unit
 ) {
+
+
+
+    val earnedCashViewModel: EarnedCashViewModel = koinViewModel()
+
+    val today = dateFormat(System.currentTimeMillis())
+
+    // Active earnings for today
+    val earningsToday by earnedCashViewModel
+        .getEarningsByDate(today)
+        .collectAsStateWithLifecycle(initialValue = emptyList())
 
     val backgroundColor = colorResource(id = R.color.dusk_blue)
 
@@ -503,6 +300,19 @@ fun AddEarnings(
                             }
 
                             if (valid) {
+
+                                earnedCashViewModel.insertEarnings(
+                                    EarnedCashEntity(
+                                        itemNumber = generateTimestampBased10DigitNumberItemNo().toString(),
+                                        totalEarned = amountEarned.toFloat(),
+                                        totalSaved = amountSaved.toFloat(),
+                                        totalSpend = amountSpent.toFloat(),
+                                        source = source,
+                                        note = noteDescription,
+                                        date = today
+                                    )
+                                )
+
                                 Toast.makeText(
                                     context,
                                     "Saved successfully",
