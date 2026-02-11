@@ -16,6 +16,7 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gw.myearnings.R
+import com.gw.myearnings.app_screens.IntellectualPropertyDialog
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Plus
@@ -26,9 +27,10 @@ fun AddFab(navController: NavController) {
     val primaryColor = colorResource(id = R.color.dusk_blue)
     val whiteColor = colorResource(id = R.color.white)
 
+    var showAddEarningDialog by remember { mutableStateOf(false) }
     FloatingActionButton(
         onClick = {
-
+            showAddEarningDialog=true
             /* Handle click */ },
         containerColor = primaryColor,
         shape = CircleShape, // ✅ Ensures the FAB is a perfect circle
@@ -42,6 +44,12 @@ fun AddFab(navController: NavController) {
             contentDescription = "Add icon",
             tint = whiteColor,
             modifier = Modifier.size(24.dp) // ✅ Icon size
+        )
+    }
+
+
+    if (showAddEarningDialog) {
+        AddEarnings (onDismiss = { showAddEarningDialog = false },
         )
     }
 }
