@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.gw.myearnings.utils.DateUtils
 import com.gw.myearnings.utils.dateFormat
 import com.gw.myearnings.utils.yearMonthFormat
 import com.gw.myearnings.viewmodel.EarnedCashViewModel
@@ -32,6 +33,12 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MonthlyEarningScreen(navController: NavController) {
+
+
+
+
+
+
 
     val earnedCashViewModel: EarnedCashViewModel = koinViewModel()
 
@@ -50,7 +57,7 @@ fun MonthlyEarningScreen(navController: NavController) {
 
     val month = yearMonthFormat(today.toString())
 
-
+    val monthWord = DateUtils.formatYearMonth(month.toString())
 
     val viewModel: SettingsViewModel = koinViewModel()
     val selectedCurrency by viewModel.selectedCurrency.collectAsState()
@@ -88,7 +95,9 @@ fun MonthlyEarningScreen(navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 10.dp)
-                        .clickable { },
+                        .clickable {
+                            navController.navigate("dailyData/${report.date}")
+                        },
                     shape = RoundedCornerShape(8.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                     colors = CardDefaults.cardColors(
@@ -102,7 +111,7 @@ fun MonthlyEarningScreen(navController: NavController) {
 
                         // Header: Date
                         Text(
-                            text = "Date :${report.date}",
+                            text = monthWord,
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.SemiBold,
                                 color = colorResource(id = R.color.white)
@@ -114,7 +123,7 @@ fun MonthlyEarningScreen(navController: NavController) {
                             text = "Earned: $selectedCurrency ${report.totalEarned}",
                             style = MaterialTheme.typography.headlineSmall.copy(
                                 fontWeight = FontWeight.SemiBold,
-                                color = colorResource(id = R.color.white)
+                                color = colorResource(id = R.color.lilac_ash)
                             )
                         )
                         StatText(

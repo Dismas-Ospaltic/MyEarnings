@@ -13,6 +13,7 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.gw.myearnings.app_screens.AppOverviewScreen
 import com.gw.myearnings.app_screens.AppSettingScreen
+import com.gw.myearnings.app_screens.DailyEarnsScreen
 import com.gw.myearnings.app_screens.MonthlyEarningScreen
 import com.gw.myearnings.app_screens.ThisMonthEarningScreen
 
@@ -117,9 +118,10 @@ fun AppNavigation(
         }
 
 
-//        composable(Screen.DailyData.route) { backStackEntry ->
-//            val dateId = backStackEntry.arguments?.getString("dateId") ?: "Unknown"
-//            DailyDataScreen(navController, dateId)
-//        }
+        composable(Screen.DailyData.route) { backStackEntry ->
+            val dateId = backStackEntry.arguments?.getString("dateId") ?: "Unknown"
+            DailyEarnsScreen(navController, dateId)
+//            (navController: NavController, date: String)
+        }
     }
 }
