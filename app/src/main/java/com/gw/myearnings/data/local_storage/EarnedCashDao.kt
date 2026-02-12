@@ -80,17 +80,31 @@ interface EarnedCashDao {
 
 
 
+//    @Query("""
+//    SELECT
+//        date,
+//        SUM(totalEarned) AS totalEarned,
+//        SUM(totalSpend) AS totalSpend,
+//        SUM(totalSaved) AS totalSaved
+//    FROM earned_cash
+//    GROUP BY date
+//    ORDER BY date DESC
+//""")
+//    fun getMonthlyEarningReports(): Flow<List<MonthlyEarningReport>>
+
     @Query("""
-    SELECT 
-        date,
+    SELECT  
+    date,
+        strftime('%Y-%m', date) AS month,
         SUM(totalEarned) AS totalEarned,
         SUM(totalSpend) AS totalSpend,
         SUM(totalSaved) AS totalSaved
     FROM earned_cash
-    GROUP BY date
-    ORDER BY date DESC
+    GROUP BY strftime('%Y-%m', date)
+    ORDER BY strftime('%Y-%m', date) DESC
 """)
     fun getMonthlyEarningReports(): Flow<List<MonthlyEarningReport>>
+
 
     ///settings operations
 

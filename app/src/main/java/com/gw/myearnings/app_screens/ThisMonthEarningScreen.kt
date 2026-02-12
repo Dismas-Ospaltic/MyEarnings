@@ -65,10 +65,13 @@ fun ThisMonthEarningScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 12.dp, vertical = 16.dp)
+                .padding(bottom = 95.dp)
                 .background(colorResource(id = R.color.lavender))
                 // 👇 THIS is the key line
                 // It pushes CONTENT below the status bar
                 .statusBarsPadding()
+
+
         ) {
             DateHeader()
             Spacer(modifier = Modifier.height(8.dp))

@@ -9,7 +9,7 @@ import com.gw.myearnings.model.EarnedCashEntity
 import com.gw.myearnings.model.AppConfigEntity
 
 
-@Database(entities = [EarnedCashEntity::class, AppConfigEntity::class], version = 3, exportSchema = false)
+@Database(entities = [EarnedCashEntity::class, AppConfigEntity::class], version = 4, exportSchema = false)
 abstract class EarnedCashDataBase : RoomDatabase() {
 
     abstract fun earnedCashDao(): EarnedCashDao

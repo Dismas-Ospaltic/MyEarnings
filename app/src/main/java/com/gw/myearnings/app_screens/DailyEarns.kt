@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
@@ -30,6 +32,7 @@ import com.gw.myearnings.viewmodel.SettingsViewModel
 import org.koin.androidx.compose.koinViewModel
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DailyEarnsScreen(navController: NavController, date: String) {
 
@@ -53,18 +56,31 @@ fun DailyEarnsScreen(navController: NavController, date: String) {
     val monthWord = DateUtils.formatYearMonth(month.toString())
 
 
-
     val viewModel: SettingsViewModel = koinViewModel()
     val selectedCurrency by viewModel.selectedCurrency.collectAsState()
 
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Earnings List") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent
+                )
+            )
+        }
+    ) { padding ->
     Column(
         modifier = Modifier
             .fillMaxSize()
-
+            .padding(padding)
             // Scrollable content
             .verticalScroll(rememberScrollState())
-
-
             .background(colorResource(id = R.color.lavender))
     ) {
         Column(
@@ -79,9 +95,9 @@ fun DailyEarnsScreen(navController: NavController, date: String) {
             MonthlyHeaderDaily(monthWord)
             Spacer(modifier = Modifier.height(8.dp))
 
-            if(earningsToday.isEmpty()){
+            if (earningsToday.isEmpty()) {
                 NoDataPlaceholder()
-            }else{
+            } else {
                 // Iterate over earnings when not empty
                 for (index in earningsToday.indices) {
                     val earn = earningsToday[index]
@@ -196,10 +212,9 @@ fun DailyEarnsScreen(navController: NavController, date: String) {
             }
 
 
-
         }
     }
-
+}
 }
 
 
