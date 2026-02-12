@@ -23,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.gw.myearnings.app_screens.ui_components.ManageEarnings
 import com.gw.myearnings.app_screens.ui_components.SumCountDisplay
 import com.gw.myearnings.utils.dateFormat
 import com.gw.myearnings.utils.yearMonthFormat
@@ -51,14 +52,21 @@ fun ThisMonthEarningScreen(navController: NavController) {
 
 
 
+
+    var selectedAmountSpent by remember { mutableStateOf<String?>(null) }
+    var selectedAmountSaved by remember { mutableStateOf<String?>(null) }
+    var selectedAmountEarned by remember { mutableStateOf<String?>(null) }
+    var selectedSource by remember { mutableStateOf<String?>(null) }
+    var selectedNoteDescription by remember { mutableStateOf<String?>(null) }
+    var selectedItemNo by remember { mutableStateOf<String?>(null) }
+    var showManageDialog by remember { mutableStateOf(false) }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-
             // Scrollable content
             .verticalScroll(rememberScrollState())
-
-
             .background(colorResource(id = R.color.lavender))
     ) {
         Column(
@@ -70,8 +78,6 @@ fun ThisMonthEarningScreen(navController: NavController) {
                 // 👇 THIS is the key line
                 // It pushes CONTENT below the status bar
                 .statusBarsPadding()
-
-
         ) {
             DateHeader()
             Spacer(modifier = Modifier.height(8.dp))
@@ -114,7 +120,15 @@ fun ThisMonthEarningScreen(navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 10.dp)
-                        .clickable { },
+                        .clickable {
+                            selectedAmountSpent = earn.totalSpend.toString()
+                            selectedAmountSaved = earn.totalSaved.toString()
+                             selectedAmountEarned =earn.totalEarned.toString()
+                             selectedSource=earn.source
+                            selectedNoteDescription = earn.note
+                            selectedItemNo = earn.itemNumber
+                             showManageDialog = true
+                        },
                     shape = RoundedCornerShape(8.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                     colors = CardDefaults.cardColors(
@@ -219,6 +233,23 @@ fun ThisMonthEarningScreen(navController: NavController) {
             }
 
         }
+    }
+
+
+
+    if (showManageDialog) {
+
+        ManageEarnings(
+            navController,
+            onDismiss = {  showManageDialog = false },
+        amountSpent = selectedAmountSpent!!.toFloat(),
+        amountSaved=selectedAmountSaved!!.toFloat(),
+        amountEarned=selectedAmountEarned!!.toFloat(),
+        source=selectedSource!!.toString(),
+        noteDescription=selectedNoteDescription,
+        itemNo=selectedItemNo!!.toString()
+        )
+
     }
 
 }
