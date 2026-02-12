@@ -321,17 +321,15 @@ fun EditEarnings(
 
                             if (valid) {
 
-                                earnedCashViewModel.insertEarnings(
-                                    EarnedCashEntity(
-                                        itemNumber = generateTimestampBased10DigitNumberItemNo().toString(),
-                                        totalEarned = amountEarned.toFloat(),
-                                        totalSaved = amountSaved.toFloat(),
-                                        totalSpend = amountSpent.toFloat(),
-                                        source = source,
-                                        note = noteDescription,
-                                        date = today
-                                    )
+                                earnedCashViewModel.updateEarningItem(
+                                    itemNumber = itemNo,
+                                    totalEarned = amountEarned.toFloat(),
+                                    totalSaved=amountSaved.toFloat(),
+                                    totalSpend= amountSpent.toFloat(),
+                                    source= source,
+                                    note= noteDescription
                                 )
+
 
                                 Toast.makeText(
                                     context,
@@ -344,7 +342,7 @@ fun EditEarnings(
                         }
                     ) {
                         Text(
-                            text = "Add",
+                            text = "Update",
                             color = Color.White,
                             fontWeight = FontWeight.Bold
                         )
