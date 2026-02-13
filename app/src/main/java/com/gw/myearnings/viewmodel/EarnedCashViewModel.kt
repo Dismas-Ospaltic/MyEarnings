@@ -42,6 +42,10 @@ class EarnedCashViewModel(
         return repository.getAllEarningsByDate(dateToday)
     }
 
+    fun getEarningsByYearMonth(month: String): Flow<List<EarnedCashEntity>> {
+        return repository.getAllEarningsByDate(month)
+    }
+
     // Observe archived earnings
     fun getArchivedEarnings(): Flow<List<EarnedCashEntity>> {
         return repository.getAllEarningsArchived()

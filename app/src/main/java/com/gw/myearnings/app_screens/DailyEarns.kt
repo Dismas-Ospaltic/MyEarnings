@@ -39,10 +39,11 @@ fun DailyEarnsScreen(navController: NavController, date: String) {
     val earnedCashViewModel: EarnedCashViewModel = koinViewModel()
 
 //    val today = dateFormat(System.currentTimeMillis())
+    val month = yearMonthFormat(date.toString())
 
-    // Active earnings for today
+    // Active earnings for current year month
     val earningsToday by earnedCashViewModel
-        .getEarningsByDate(date)
+        .getEarningsByYearMonth(month.toString())
         .collectAsStateWithLifecycle(initialValue = emptyList())
 
 
@@ -51,7 +52,7 @@ fun DailyEarnsScreen(navController: NavController, date: String) {
         .getMonthlyReports()
         .collectAsStateWithLifecycle(initialValue = emptyList())
 
-    val month = yearMonthFormat(date.toString())
+
 
     val monthWord = DateUtils.formatYearMonth(month.toString())
 
@@ -63,7 +64,7 @@ fun DailyEarnsScreen(navController: NavController, date: String) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Earnings List") },
+                title = { Text("Earning List") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -106,10 +107,10 @@ fun DailyEarnsScreen(navController: NavController, date: String) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 10.dp)
-                            .clickable { },
+                            .padding(vertical = 10.dp),
+//                            .clickable { },
                         shape = RoundedCornerShape(8.dp),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                         colors = CardDefaults.cardColors(
                             containerColor = colorResource(id = R.color.platinum) // soft off-white
                         )
