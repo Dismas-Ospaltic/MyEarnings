@@ -39,7 +39,7 @@ fun DailyEarnsScreen(navController: NavController, date: String) {
     val earnedCashViewModel: EarnedCashViewModel = koinViewModel()
 
 //    val today = dateFormat(System.currentTimeMillis())
-    val month = yearMonthFormat(date.toString())
+    val month = yearMonthFormat(date)
 
     // Active earnings for current year month
     val earningsToday by earnedCashViewModel
@@ -107,7 +107,7 @@ fun DailyEarnsScreen(navController: NavController, date: String) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 10.dp),
+                            .padding(vertical = 4.dp),
 //                            .clickable { },
                         shape = RoundedCornerShape(8.dp),
                         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),

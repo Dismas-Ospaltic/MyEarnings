@@ -36,7 +36,7 @@ class EarnedCashRepository(
     }
 
     fun getEarningsByYearMonth(month: String): Flow<List<EarnedCashEntity>> {
-        return earnedCashDao.getAllEarningsByDate(month)
+        return earnedCashDao.getEarningsByYearMonth(month)
     }
 
     // Get all archived earnings

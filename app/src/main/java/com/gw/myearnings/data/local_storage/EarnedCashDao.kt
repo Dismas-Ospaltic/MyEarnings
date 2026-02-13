@@ -22,8 +22,14 @@ interface EarnedCashDao {
     @Update
     suspend fun updateEarnings(earnings: EarnedCashEntity)
 
-    @Query("SELECT * FROM earned_cash WHERE date LIKE :month || '%' AND  status='active' ORDER BY timestamp DESC")
-    fun getEarningsByYearMonth(month: String): Flow<List<EarnedCashEntity>>
+//    @Query("SELECT * FROM earned_cash WHERE date LIKE :month || '%' AND status='active' ORDER BY timestamp DESC")
+@Query("""
+    SELECT * FROM earned_cash 
+    WHERE date LIKE (:month || '%') 
+    AND status = 'active' 
+    ORDER BY timestamp DESC
+""")
+fun getEarningsByYearMonth(month: String): Flow<List<EarnedCashEntity>>
 
 
     @Query("SELECT * FROM earned_cash WHERE date=:dateToday AND  status='active' ORDER BY timestamp DESC")

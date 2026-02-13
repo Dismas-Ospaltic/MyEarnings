@@ -86,7 +86,7 @@ import compose.icons.fontawesomeicons.solid.FileInvoiceDollar
 @Composable
 fun AppOverviewScreen(navController: NavController) {
     val context = LocalContext.current
-    val appVersion = "1.0.2" // Ideally pull this from BuildConfig
+    val appVersion = "1.0.0" // Ideally pull this from BuildConfig
 
 
     var showIpDialog by remember { mutableStateOf(false) }
@@ -153,7 +153,13 @@ fun AppOverviewScreen(navController: NavController) {
                 AboutItem(
                     icon = Icons.Default.Info,
                     label = "Description",
-                    subLabel = "Track your monthly earnings and expenses with ease and precision."
+                    subLabel = "MyEarnings is a simple income tracking app designed to help " +
+                            "you record money earned from different sources and monitor " +
+                            "how you spend and save it. Whether your income comes from " +
+                            "side hustles, small business activities, freelance work," +
+                            " or part-time shifts, MyEarnings" +
+                            " helps you stay organized and aware of your financial progress."
+                            ,
                 )
 //                AboutItem(
 //                    icon = Icons.Default.Info,
